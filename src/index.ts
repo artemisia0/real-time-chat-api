@@ -31,7 +31,7 @@ const apolloServer = new ApolloServer({
 
 const wsServer = new WebSocketServer({
 	server: httpServer,
-	path: '/api/graphql',
+	path: '/',
 });
 
 wsServer.on('connection', () => {
@@ -47,16 +47,17 @@ useServer({ schema, context }, wsServer);
 
 const startServer = async () => {
 	await apolloServer.start()
-	
-	app.use('*', cors<cors.CorsRequest>(), express.json(), expressMiddleware(apolloServer, { context }))
 
 	app.use(cors<cors.CorsRequest>({
-		origin: ['http://localhost:3000', 'https://real-time-chat-production-99c6.up.railway.app:443'],
+		origin: process.env.ENV_PRODUCTION === 'true' ? process.env.CLIENT_PRODUCTION_URI : 'http://localhost:3000',
 		credentials: true
 	}))
+	app.use(express.json())
+	app.use(expressMiddleware(apolloServer, { context }))
 
-	await new Promise((resolve, reject) => httpServer.listen({ port: 4000 }, () => resolve(undefined)))
-	console.log("Server listens on port 4000")
+	const port = 4000
+	await new Promise((resolve, reject) => httpServer.listen({ port }, () => resolve(undefined)))
+	console.log(`Server listens on port ${port}`)
 }
 
 startServer()
