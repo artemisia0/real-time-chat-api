@@ -48,11 +48,18 @@ useServer({ schema, context }, wsServer);
 const startServer = async () => {
 	await apolloServer.start()
 
-	app.use(cors<cors.CorsRequest>({
-		// origin: process.env.ENV_PRODUCTION === 'true' ? process.env.CLIENT_PRODUCTION_URI : 'http://localhost:3000',
-		origin: '*',
-		credentials: true
-	}))
+	const corsOptions = {
+		origin: (origin: any, callback: any) => {
+			if (!origin) {
+				return callback(null, '*')
+			}
+			callback(null, origin)
+		},
+		credentials: true,
+		optionsSuccessStatus: 200,
+	}
+
+	app.use(cors(corsOptions))
 	app.use(express.json())
 	app.use(expressMiddleware(apolloServer, { context }))
 
