@@ -49,7 +49,8 @@ const startServer = async () => {
 	await apolloServer.start()
 
 	app.use(cors<cors.CorsRequest>({
-		origin: process.env.ENV_PRODUCTION === 'true' ? process.env.CLIENT_PRODUCTION_URI : 'http://localhost:3000',
+		// origin: process.env.ENV_PRODUCTION === 'true' ? process.env.CLIENT_PRODUCTION_URI : 'http://localhost:3000',
+		origin: '*',
 		credentials: true
 	}))
 	app.use(express.json())
