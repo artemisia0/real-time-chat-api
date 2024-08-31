@@ -11,9 +11,9 @@ type Query {
 }
 
 type Mutation {
-	signIn(userCredentials: UserCredentials!): Status!
+	signIn(userCredentials: UserCredentials!): SignInResponse!
 	signUp(userCredentials: UserCredentials!): Status!
-	signOut: Status!
+	signOut: SignOutResponse!
 
   createChat(name: String!, creatorUsername: String!): CreateChatResponse!
   leaveChat(username: String!, chatID: String!): Status!
@@ -26,6 +26,15 @@ type Mutation {
   removeChatMember(username: String!, chatID: String!): RemoveChatMemberResponse!
   addChatMember(username: String!, chatID: String!, role: String!): AddChatMemberResponse!
   updateChatMemberRole(username: String!, chatID: String!, role: String!): UpdateChatMemberRoleResponse!
+}
+
+type SignOutResponse {
+  sessionToken: String!
+}
+
+type SignInResponse {
+  status: Status!
+  sessionToken: String
 }
 
 type UpdateChatMemberRoleResponse {
